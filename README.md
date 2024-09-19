@@ -57,4 +57,4 @@ This project is licensed under the MIT License.
 For more information, refer to the manual page using `man sysopctl`.
 
 ## Flowchart
-![Flowchart](./flowchart.png)
+![Flowchart](./img/flowchart.png)
