@@ -1,0 +1,157 @@
+#!/bin/bash
+VERSION="v0.1.0"
+
+show_help() {
+    cat <<EOF
+sysopctl - System Operation Control Tool
+
+Usage: sysopctl [command] [options]
+
+Commands:
+  --help                                   Show help message
+  --version                                Show command version
+  services list                            List running services
+  system load                              View system load averages
+  service start                            Start a service
+  service stop                             Stop a service
+  disk usage                               View disk usage
+  process monitor                          Monitor system processes
+  log analyze                              Analyze system logs
+  backup <source-path> <destination-path>  Backup system files to <path>
+EOF
+}
+
+list_services() {
+    if ! command -v systemctl &>/dev/null; then
+        echo "Error: systemctl command not found. This script is designed for systems using systemd."
+        return 1
+    fi
+
+    echo "Listing active services:"
+    systemctl list-units --type=service --state=active
+    echo ""
+    echo "------------------------------------------"
+    echo ""
+    echo "Listing failed services:"
+    systemctl list-units --type=service --state=failed
+}
+
+manageServices() {
+    local action=$1
+    local service=$2
+
+    # List of valid actions
+    valid_actions=("start" "stop" "restart" "status" "enable" "disable")
+
+    # Check if systemctl is available
+    if ! command -v systemctl &>/dev/null; then
+        echo "Error: systemctl command not found. This script requires a system running systemd."
+        return 1
+    fi
+
+    if [[ -z "$action" || -z "$service" ]]; then
+        echo "Usage: sysopctl service <start|stop|restart|status|enable|disable> <service-name>"
+        return 1
+    fi
+
+    if [[ ! " ${valid_actions[*]} " =~ \b$action\b ]]; then
+        echo "Error: Invalid action '$action'."
+        return 1
+    fi
+
+    if ! systemctl list-units --type=service --all | grep -q "$service"; then
+        echo "Error: Service '$service' does not exist."
+        return 1
+    fi
+
+    if systemctl "$action" "$service"; then
+        echo "Service '$service' $action successfully."
+    else
+        echo "Failed to $action service '$service'."
+    fi
+}
+
+bkup() {
+    src=$1
+    dest=$2
+
+    if [[ -d "$src" ]]; then
+        echo "Starting backup from $src to $dest"
+
+        if [[ ! -d "$dest" ]]; then
+            echo "Destination does not exist. Creating $dest..."
+            mkdir -p "$dest"
+        fi
+
+        rsync -av "$src" "$dest"
+        echo "Backup completed."
+    else
+        echo "Error: $src is not a valid directory."
+    fi
+}
+
+case "$1" in
+--help)
+    show_help
+    ;;
+--version)
+    echo "sysopctl $VERSION"
+    ;;
+services)
+    if [[ "$2" == "list" ]]; then
+        systemctl list-units --type=service
+    else
+        echo "Invalid option for 'services'. Use 'list'."
+    fi
+    ;;
+system)
+    if [[ "$2" == "load" ]]; then
+        uptime | awk -F'load average:' '{ print $2 }' | awk '{ print $1, $2, $3 }'
+    else
+        echo "Invalid option for 'system'. Use 'load'."
+    fi
+    ;;
+service)
+    if [[ -z "$2" || -z "$3" ]]; then
+        echo "Error: Missing arguments. Usage: sysopctl service <start|stop> <service-name>"
+        return 1
+    fi
+
+    if [[ "$2" == "start" || "$2" == "stop" || "$2" == "restart" || "$2" == "status" || "$2" == "enable" || "$2" == "disable" ]]; then
+        manageServices "$2" "$3"
+    else
+        echo "Error: Invalid service command '$2'. Use 'start', 'stop', 'restart', 'status', 'enable', or 'disable'."
+    fi
+    ;;
+disk)
+    if [[ "$2" == "usage" ]]; then
+        df -h
+    else
+        echo "Invalid option for 'disk'. Use 'usage'."
+    fi
+    ;;
+process)
+    if [[ "$2" == "monitor" ]]; then
+        top -d 1
+    else
+        echo "Invalid option for 'process'. Use 'monitor'."
+    fi
+    ;;
+log)
+    if [[ "$2" == "analyze" ]]; then
+        journalctl -p err -n 50
+    else
+        echo "Invalid option for 'log'. Use 'analyze'."
+    fi
+    ;;
+backup)
+    if [[ -n "$2" && -n "$3" ]]; then
+        bkup "$2" "$3"
+    else
+        echo "Error: You must specify both the source and destination paths. Usage: sysopctl backup <source-path> <destination-path>"
+    fi
+    ;;
+*)
+    echo "Invalid command. Use --help for usage."
+    ;;
+esac
