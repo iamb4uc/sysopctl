@@ -1,51 +1,63 @@
 .TH SYSOPCTL 1 "September 2024" "sysopctl v0.1.0" "System Operation Control Tool"
 .SH NAME
-sysopctl \- A command-line tool for managing system services, processes, and health.
+sysopctl \- Command-line tool for managing system services, processes, disk usage, and backups.
 .SH SYNOPSIS
 .B sysopctl
 [\fIcommand\fR] [\fIoptions\fR]
 .SH DESCRIPTION
 .B sysopctl
-is a tool to manage system resources like services, processes, disk usage, and logs.
+is a command-line tool that helps administrators manage system services, monitor processes, analyze logs, and handle system backups. It works on systems using systemd and offers features such as listing and managing services, displaying system load, monitoring processes, and backing up files.
 .SH OPTIONS
 .TP
-.B --help
-Show this help message.
+.B \-\-help
+Display the help message and usage information.
 .TP
-.B --version
-Display the current version of sysopctl.
+.B \-\-version
+Show the current version of \fBsysopctl\fR.
 .TP
 .B services list
-List all active services.
+List all active system services.
+.TP
+.B service \fIaction\fR \fIservice-name\fR
+Manage system services by performing actions such as \fBstart\fR, \fBstop\fR, \fBrestart\fR, \fBstatus\fR, \fBenable\fR, or \fBdisable\fR.
 .TP
 .B system load
-View current system load averages.
-.TP
-.B service start <service-name>
-Start a specified service.
-.TP
-.B service stop <service-name>
-Stop a specified service.
+Display the current system load averages.
 .TP
 .B disk usage
-Display disk usage statistics.
+Show detailed disk usage statistics.
 .TP
 .B process monitor
-Monitor running system processes.
+Monitor system processes in real-time.
 .TP
 .B log analyze
-Analyze system logs for critical entries.
+Analyze system logs for critical entries using \fBjournalctl\fR.
 .TP
-.B backup <path>
-Backup system files to a specified path.
+.B backup \fIsource-path\fR \fIdestination-path\fR
+Backup files from the source directory to the specified destination.
 .SH EXAMPLES
 .TP
 .B sysopctl services list
-List all active services.
+List all currently active services.
+.TP
+.B sysopctl service start apache2
+Start the \fBapache2\fR service.
 .TP
 .B sysopctl system load
-Show current system load averages.
+Display the system's load averages.
+.TP
+.B sysopctl backup /home/user/data /mnt/backup
+Backup the contents of \fB/home/user/data\fR to \fB/mnt/backup\fR.
+.TP
+.B sysopctl disk usage
+Show disk usage information in a human-readable format.
+.TP
+.B sysopctl process monitor
+Monitor running processes using the \fBtop\fR command.
+.TP
+.B sysopctl log analyze
+Analyze system logs and display the last 50 error entries using \fBjournalctl\fR.
 .SH AUTHOR
 Written by Swapnil Bhowmik.
 .SH COPYRIGHT
-Copyright 2024 Swapnil Bhowmik.
+Copyright 2024, Swapnil Bhowmik.

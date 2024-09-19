@@ -17,6 +17,15 @@ Commands:
   process monitor                          Monitor system processes
   log analyze                              Analyze system logs
   backup <source-path> <destination-path>  Backup system files to <path>
+
+Examples:
+  sysopctl services list
+  sysopctl system load
+  sysopctl service start <service_name>
+  sysopctl disk usage
+  sysopctl process monitor
+  sysopctl log analyze
+  sysopctl backup <source_path> <destination_path>
 EOF
 }
 
