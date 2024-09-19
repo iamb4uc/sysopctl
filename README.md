@@ -49,7 +49,7 @@ sudo ./install.sh
 ```
 
 #### **Contributing**
-Please submit issues or pull requests to the [GitHub repository](https://github.com/iamb4uc/sysopctl).
+Please submit issues or pull requests to the [GitHub repository](https://github.com/iamb4uc/sysopctl/pulls).
 
 #### **License**
 This project is licensed under the MIT License.
