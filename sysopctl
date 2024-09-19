@@ -1,5 +1,4 @@
 #!/bin/bash
-VERSION="v0.1.0"
 
 show_help() {
     cat <<EOF
@@ -95,7 +94,7 @@ case "$1" in
     show_help
     ;;
 --version)
-    echo "sysopctl $VERSION"
+    echo "sysopctl v0.1.0"
     ;;
 services)
     if [[ "$2" == "list" ]]; then
