@@ -1,5 +1,3 @@
-TASK 2 OF XENON STACK CODE ASSIGNMENT.
-
 ### **`sysopctl` - System Resource and Task Management**
 
 `sysopctl` is a command-line utility for managing system services, monitoring system resources, and handling system backups.
